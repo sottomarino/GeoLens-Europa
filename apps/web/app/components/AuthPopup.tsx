@@ -66,15 +66,15 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop - semi-transparent to show app behind */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
 
-      {/* Modal */}
-      <div className="relative bg-black border border-white w-full max-w-md mx-4 p-8">
+      {/* Modal - responsive padding and sizing */}
+      <div className="relative bg-black border border-white w-full max-w-md p-5 sm:p-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-light tracking-wider text-white uppercase">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-light tracking-wider text-white uppercase">
             {isLogin ? 'Login' : 'Register'}
           </h2>
           <p className="text-white/50 text-xs mt-2 font-light">
@@ -123,7 +123,7 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
         </form>
 
         {/* Divider */}
-        <div className="flex items-center my-6">
+        <div className="flex items-center my-4 sm:my-6">
           <div className="flex-1 border-t border-white/20"></div>
           <span className="px-4 text-white/30 text-xs font-light">or</span>
           <div className="flex-1 border-t border-white/20"></div>
@@ -145,7 +145,7 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
         </button>
 
         {/* Toggle */}
-        <p className="text-center mt-6 text-white/50 text-xs font-light">
+        <p className="text-center mt-4 sm:mt-6 text-white/50 text-xs font-light">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
           <button
             type="button"
@@ -159,7 +159,7 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
         {/* Back to Home */}
         <button
           onClick={onBackToHome}
-          className="w-full mt-6 py-2 text-white/40 text-xs font-light tracking-wide hover:text-white/60 transition-colors flex items-center justify-center gap-2"
+          className="w-full mt-4 sm:mt-6 py-2 text-white/40 text-xs font-light tracking-wide hover:text-white/60 transition-colors flex items-center justify-center gap-2"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
