@@ -43,6 +43,8 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
         setError('Email already in use');
       } else if (err.code === 'auth/weak-password') {
         setError('Password must be at least 6 characters');
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setError('Registration is currently disabled. This is a development version available only to authorized developers.');
       } else {
         setError(err.message || 'An error occurred');
       }
@@ -59,7 +61,13 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
       await signInWithPopup(auth, provider);
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      if (err.code === 'auth/operation-not-allowed') {
+        setError('Google Sign-In is currently disabled. This is a development version available only to authorized developers.');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        setError('Sign-in cancelled');
+      } else {
+        setError(err.message || 'An error occurred');
+      }
     } finally {
       setLoading(false);
     }
