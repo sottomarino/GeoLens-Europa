@@ -589,9 +589,9 @@ export default function LandingPageB({ onEnter }: LandingPageProps) {
         <div className="relative">
           <button
             onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-            className="flex items-center gap-2 border border-white px-4 py-2 text-white hover:bg-white hover:text-black transition-all"
+            className="flex items-center gap-1 px-3 py-1 text-white/70 hover:text-white transition-all"
           >
-            <span className="text-sm font-light tracking-wide">{currentLanguage.name}</span>
+            <span className="text-xs font-light tracking-wide">{currentLanguage.name}</span>
             <svg
               className={`w-3 h-3 transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`}
               fill="none"
