@@ -49,9 +49,15 @@ export default function Home() {
   }
 
   // Show auth popup if not logged in (after clicking Explore)
+  // Show the app in the background with auth popup overlay
   if (!user && authChecked) {
     return (
-      <div className="w-full h-screen bg-black">
+      <div className="w-full h-screen relative">
+        {/* App preview in background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <Map selectedLayer={selectedLayer} onLayerChange={setSelectedLayer} />
+        </div>
+        {/* Auth popup overlay */}
         <AuthPopup
           isOpen={true}
           onSuccess={handleAuthSuccess}

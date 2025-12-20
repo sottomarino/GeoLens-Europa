@@ -67,8 +67,8 @@ export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopup
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      {/* Backdrop - non cliccabile */}
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+      {/* Backdrop - semi-transparent to show app behind */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
 
       {/* Modal */}
       <div className="relative bg-black border border-white w-full max-w-md mx-4 p-8">
