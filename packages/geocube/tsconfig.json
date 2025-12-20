@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "paths": {
+            "@geo-lens/risk-engine": ["../risk-engine/src"]
+        }
+    },
+    "include": [
+        "src"
+    ],
+    "references": [
+        { "path": "../risk-engine" }
+    ]
+}

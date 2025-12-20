@@ -1,0 +1,14 @@
+node_modules
+dist
+.next
+.turbo
+build
+.env
+.DS_Store
+coverage
+.vscode
+
+# Data
+apps/api/public/data/*.json
+data/raw/
+scripts/ingest/**/*.json
