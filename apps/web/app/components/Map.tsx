@@ -273,6 +273,8 @@ export default function MapView({ selectedLayer, onLayerChange }: Props) {
                 onAnalyze={handleAnalyze}
                 loading={loading}
                 analysis={analysis}
+                selectedLayer={selectedLayer}
+                onLayerChange={onLayerChange}
             />
 
             {/* Chat Panel */}

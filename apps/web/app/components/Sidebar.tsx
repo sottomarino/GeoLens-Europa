@@ -8,8 +8,6 @@ type Props = {
     onClose: () => void;
     onAnalyze: () => void;
     loading: boolean;
-    onAnalyze: () => void;
-    loading: boolean;
     analysis: any;
     selectedLayer: 'water' | 'mineral' | 'landslide' | 'seismic' | 'satellite' | 'precipitation';
     onLayerChange: (layer: 'water' | 'mineral' | 'landslide' | 'seismic' | 'satellite' | 'precipitation') => void;
