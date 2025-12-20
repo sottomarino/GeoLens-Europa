@@ -13,8 +13,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GeoLens Europa - Analisi Geospaziale del Rischio Ambientale",
-  description: "Piattaforma avanzata per la mappatura del rischio multi-hazard in Europa con dati satellitari NASA e Copernicus",
+  title: "GeoLens Europa",
+  description: "Advanced geospatial platform for multi-hazard environmental risk mapping in Europe",
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  themeColor: "#000000",
+  openGraph: {
+    title: "GeoLens Europa",
+    description: "Advanced geospatial platform for multi-hazard environmental risk mapping in Europe",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
