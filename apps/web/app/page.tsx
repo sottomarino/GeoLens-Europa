@@ -10,6 +10,9 @@ const Globe = dynamic(() => import('./components/Globe'), { ssr: false });
 const LandingPage = dynamic(() => import('./components/LandingPageB'), { ssr: false });
 const AuthPopup = dynamic(() => import('./components/AuthPopup'), { ssr: false });
 
+// Email autorizzate ad accedere all'app
+const ALLOWED_EMAILS = ['bitvrbit@gmail.com'];
+
 export default function Home() {
   const [showLanding, setShowLanding] = useState(true);
   const [user, setUser] = useState<User | null>(null);
@@ -76,7 +79,39 @@ export default function Home() {
     );
   }
 
-  // User is logged in - show the app
+  // Check if user email is authorized
+  const isAuthorized = user && user.email && ALLOWED_EMAILS.includes(user.email);
+
+  // User is logged in but not authorized
+  if (user && !isAuthorized) {
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white text-xl font-light tracking-wider mb-4">Access Denied</div>
+          <p className="text-white/50 text-sm font-light mb-6">
+            This email is not authorized to access GeoLens Europa.
+          </p>
+          <p className="text-white/30 text-xs mb-8">{user.email}</p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2 border border-white/30 text-white/70 text-sm font-light hover:bg-white hover:text-black transition-all"
+            >
+              Logout
+            </button>
+            <button
+              onClick={handleBackToHome}
+              className="px-6 py-2 bg-white text-black text-sm font-light hover:bg-black hover:text-white border border-white transition-all"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // User is logged in and authorized - show the app
   return (
     <main className="flex min-h-screen flex-col">
       <div className="w-full h-screen relative">
