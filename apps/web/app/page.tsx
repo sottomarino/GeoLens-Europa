@@ -2,13 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from './lib/firebase';
 
 const Map = dynamic(() => import('./components/Map'), { ssr: false });
 const Globe = dynamic(() => import('./components/Globe'), { ssr: false });
 const LandingPage = dynamic(() => import('./components/LandingPageB'), { ssr: false });
+const AuthPopup = dynamic(() => import('./components/AuthPopup'), { ssr: false });
 
 export default function Home() {
   const [showLanding, setShowLanding] = useState(true);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [mode, setMode] = useState<'2D' | '3D'>('2D');
   const [selectedLayer, setSelectedLayer] = useState<'water' | 'mineral' | 'landslide' | 'seismic' | 'satellite' | 'precipitation'>('water');
 
@@ -20,9 +25,39 @@ export default function Home() {
     }
   }, []);
 
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Show auth popup after entering the app (if not logged in)
+  useEffect(() => {
+    if (!showLanding && !user) {
+      const hasSkippedAuth = sessionStorage.getItem('geolens-auth-skipped');
+      if (hasSkippedAuth !== 'true') {
+        const timer = setTimeout(() => {
+          setShowAuthPopup(true);
+        }, 3000); // Show after 3 seconds
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [showLanding, user]);
+
   const handleEnterApp = () => {
     sessionStorage.setItem('geolens-landing-seen', 'true');
     setShowLanding(false);
+  };
+
+  const handleAuthClose = () => {
+    sessionStorage.setItem('geolens-auth-skipped', 'true');
+    setShowAuthPopup(false);
+  };
+
+  const handleAuthSuccess = () => {
+    setShowAuthPopup(false);
   };
 
   if (showLanding) {
@@ -55,7 +90,17 @@ export default function Home() {
             </button>
           </div>
           <p className="text-xs text-gray-600 mt-2">Click on the map to inspect a cell.</p>
+          {user && (
+            <p className="text-xs text-green-600 mt-1">Logged in: {user.email}</p>
+          )}
         </div>
+
+        {/* Auth Popup */}
+        <AuthPopup
+          isOpen={showAuthPopup}
+          onClose={handleAuthClose}
+          onSuccess={handleAuthSuccess}
+        />
       </div>
     </main>
   );
