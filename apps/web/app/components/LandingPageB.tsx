@@ -687,6 +687,11 @@ export default function LandingPageB({ onEnter }: LandingPageProps) {
           </span>
         </button>
 
+        {/* Beta Notice */}
+        <p className="mt-6 text-white/50 text-xs font-light tracking-wide uppercase">
+          Beta Version — Under Development
+        </p>
+
       </div>
 
       {/* Footer - UnityLoop */}
