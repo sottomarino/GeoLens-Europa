@@ -12,3 +12,4 @@ coverage
 apps/api/public/data/*.json
 data/raw/
 scripts/ingest/**/*.json
+.vercel
