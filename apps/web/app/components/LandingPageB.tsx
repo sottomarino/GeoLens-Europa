@@ -633,10 +633,11 @@ export default function LandingPageB({ onEnter }: LandingPageProps) {
       >
         {/* Logo / Title */}
         <div className="mb-8">
-          <h1 className="text-7xl md:text-9xl font-bold tracking-wider mb-4">
-            <span className="text-white">{t.title}</span>
+          <h1 className="text-4xl md:text-6xl font-light tracking-[0.3em] mb-4">
+            <span className="font-serif italic text-5xl md:text-7xl">G</span>
+            <span className="text-white">EOLENS</span>
           </h1>
-          <div className="h-1 w-48 mx-auto bg-white rounded-full" />
+          <div className="h-px w-32 mx-auto bg-white/70" />
         </div>
 
         {/* Subtitle */}
