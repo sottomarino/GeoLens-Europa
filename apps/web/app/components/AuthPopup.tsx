@@ -11,11 +11,11 @@ import { auth } from '../lib/firebase';
 
 interface AuthPopupProps {
   isOpen: boolean;
-  onClose: () => void;
   onSuccess: () => void;
+  onBackToHome: () => void;
 }
 
-export default function AuthPopup({ isOpen, onClose, onSuccess }: AuthPopupProps) {
+export default function AuthPopup({ isOpen, onSuccess, onBackToHome }: AuthPopupProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +37,15 @@ export default function AuthPopup({ isOpen, onClose, onSuccess }: AuthPopupProps
       }
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      if (err.code === 'auth/invalid-credential') {
+        setError('Invalid email or password');
+      } else if (err.code === 'auth/email-already-in-use') {
+        setError('Email already in use');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password must be at least 6 characters');
+      } else {
+        setError(err.message || 'An error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,31 +67,18 @@ export default function AuthPopup({ isOpen, onClose, onSuccess }: AuthPopupProps
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      {/* Backdrop - non cliccabile */}
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
 
       {/* Modal */}
       <div className="relative bg-black border border-white w-full max-w-md mx-4 p-8">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-light tracking-wider text-white uppercase">
             {isLogin ? 'Login' : 'Register'}
           </h2>
           <p className="text-white/50 text-xs mt-2 font-light">
-            Access GeoLens Europa Platform
+            Sign in to access GeoLens Europa
           </p>
         </div>
 
@@ -161,12 +156,15 @@ export default function AuthPopup({ isOpen, onClose, onSuccess }: AuthPopupProps
           </button>
         </p>
 
-        {/* Skip for now */}
+        {/* Back to Home */}
         <button
-          onClick={onClose}
-          className="w-full mt-4 text-white/30 text-xs font-light hover:text-white/50 transition-colors"
+          onClick={onBackToHome}
+          className="w-full mt-6 py-2 text-white/40 text-xs font-light tracking-wide hover:text-white/60 transition-colors flex items-center justify-center gap-2"
         >
-          Skip for now
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Home
         </button>
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User, signOut } from 'firebase/auth';
 import { auth } from './lib/firebase';
 
 const Map = dynamic(() => import('./components/Map'), { ssr: false });
@@ -12,58 +12,65 @@ const AuthPopup = dynamic(() => import('./components/AuthPopup'), { ssr: false }
 
 export default function Home() {
   const [showLanding, setShowLanding] = useState(true);
-  const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const [mode, setMode] = useState<'2D' | '3D'>('2D');
   const [selectedLayer, setSelectedLayer] = useState<'water' | 'mineral' | 'landslide' | 'seismic' | 'satellite' | 'precipitation'>('water');
-
-  // Check if user has already seen the landing
-  useEffect(() => {
-    const hasSeenLanding = sessionStorage.getItem('geolens-landing-seen');
-    if (hasSeenLanding === 'true') {
-      setShowLanding(false);
-    }
-  }, []);
 
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setAuthChecked(true);
     });
     return () => unsubscribe();
   }, []);
 
-  // Show auth popup after entering the app (if not logged in)
-  useEffect(() => {
-    if (!showLanding && !user) {
-      const hasSkippedAuth = sessionStorage.getItem('geolens-auth-skipped');
-      if (hasSkippedAuth !== 'true') {
-        const timer = setTimeout(() => {
-          setShowAuthPopup(true);
-        }, 3000); // Show after 3 seconds
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [showLanding, user]);
-
   const handleEnterApp = () => {
-    sessionStorage.setItem('geolens-landing-seen', 'true');
     setShowLanding(false);
   };
 
-  const handleAuthClose = () => {
-    sessionStorage.setItem('geolens-auth-skipped', 'true');
-    setShowAuthPopup(false);
+  const handleBackToHome = () => {
+    setShowLanding(true);
   };
 
   const handleAuthSuccess = () => {
-    setShowAuthPopup(false);
+    // User is now logged in, app will show automatically
   };
 
+  const handleLogout = async () => {
+    await signOut(auth);
+    setShowLanding(true);
+  };
+
+  // Show landing page
   if (showLanding) {
     return <LandingPage onEnter={handleEnterApp} />;
   }
 
+  // Show auth popup if not logged in (after clicking Explore)
+  if (!user && authChecked) {
+    return (
+      <div className="w-full h-screen bg-black">
+        <AuthPopup
+          isOpen={true}
+          onSuccess={handleAuthSuccess}
+          onBackToHome={handleBackToHome}
+        />
+      </div>
+    );
+  }
+
+  // Show loading while checking auth
+  if (!authChecked) {
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center">
+        <div className="text-white/50 text-sm font-light tracking-wider">Loading...</div>
+      </div>
+    );
+  }
+
+  // User is logged in - show the app
   return (
     <main className="flex min-h-screen flex-col">
       <div className="w-full h-screen relative">
@@ -91,16 +98,17 @@ export default function Home() {
           </div>
           <p className="text-xs text-gray-600 mt-2">Click on the map to inspect a cell.</p>
           {user && (
-            <p className="text-xs text-green-600 mt-1">Logged in: {user.email}</p>
+            <div className="mt-2 pt-2 border-t border-gray-200">
+              <p className="text-xs text-gray-500 truncate max-w-[200px]">{user.email}</p>
+              <button
+                onClick={handleLogout}
+                className="text-xs text-red-500 hover:text-red-700 mt-1"
+              >
+                Logout
+              </button>
+            </div>
           )}
         </div>
-
-        {/* Auth Popup */}
-        <AuthPopup
-          isOpen={showAuthPopup}
-          onClose={handleAuthClose}
-          onSuccess={handleAuthSuccess}
-        />
       </div>
     </main>
   );
