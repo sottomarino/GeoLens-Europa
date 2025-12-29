@@ -6,6 +6,44 @@ interface LandingPageProps {
   onEnter: () => void;
 }
 
+// "Tempo" in tutte le lingue europee
+const timeTranslations = [
+  { word: 'TEMPO', lang: 'Italiano' },
+  { word: 'TIME', lang: 'English' },
+  { word: 'ZEIT', lang: 'Deutsch' },
+  { word: 'TEMPS', lang: 'Français' },
+  { word: 'TIEMPO', lang: 'Español' },
+  { word: 'TEMPO', lang: 'Português' },
+  { word: 'TIJD', lang: 'Nederlands' },
+  { word: 'CZAS', lang: 'Polski' },
+  { word: 'TIMP', lang: 'Română' },
+  { word: 'ČAS', lang: 'Čeština' },
+  { word: 'IDŐ', lang: 'Magyar' },
+  { word: 'ΧΡΟΝΟΣ', lang: 'Ελληνικά' },
+  { word: 'TID', lang: 'Svenska' },
+  { word: 'TID', lang: 'Dansk' },
+  { word: 'AIKA', lang: 'Suomi' },
+  { word: 'ČAS', lang: 'Slovenčina' },
+  { word: 'ВРЕМЕ', lang: 'Български' },
+  { word: 'VRIJEME', lang: 'Hrvatski' },
+  { word: 'ČAS', lang: 'Slovenščina' },
+  { word: 'AEG', lang: 'Eesti' },
+  { word: 'LAIKS', lang: 'Latviešu' },
+  { word: 'LAIKAS', lang: 'Lietuvių' },
+  { word: 'ŻMIEN', lang: 'Malti' },
+  { word: 'AM', lang: 'Gaeilge' },
+  { word: 'ЧАС', lang: 'Українська' },
+  { word: 'TID', lang: 'Norsk' },
+  { word: 'TÍMI', lang: 'Íslenska' },
+  { word: 'KOHË', lang: 'Shqip' },
+  { word: 'ВРЕМЕ', lang: 'Македонски' },
+  { word: 'ВРЕМЕ', lang: 'Српски' },
+  { word: 'VRIJEME', lang: 'Bosanski' },
+  { word: 'VRIJEME', lang: 'Crnogorski' },
+  { word: 'ZAMAN', lang: 'Türkçe' },
+  { word: 'ВРЕМЯ', lang: 'Русский' },
+];
+
 // Traduzioni per tutte le lingue europee
 const translations: Record<string, {
   title: string;
@@ -541,12 +579,27 @@ export default function LandingPageB({ onEnter }: LandingPageProps) {
   const [isExiting, setIsExiting] = useState(false);
   const [currentLang, setCurrentLang] = useState('en');
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [timeIndex, setTimeIndex] = useState(0);
+  const [isTimeChanging, setIsTimeChanging] = useState(false);
 
   const t = translations[currentLang];
+  const currentTime = timeTranslations[timeIndex];
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Rotazione automatica della parola "tempo"
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTimeChanging(true);
+      setTimeout(() => {
+        setTimeIndex((prev) => (prev + 1) % timeTranslations.length);
+        setIsTimeChanging(false);
+      }, 300);
+    }, 2500);
+    return () => clearInterval(interval);
   }, []);
 
 
@@ -639,10 +692,23 @@ export default function LandingPageB({ onEnter }: LandingPageProps) {
           <div className="h-px w-32 mx-auto bg-white/70" />
         </div>
 
-        {/* Subtitle */}
-        <h2 className="text-2xl md:text-4xl font-light mb-6 tracking-wide text-white">
-          {t.subtitle}
-        </h2>
+        {/* Subtitle - Rotating "Time" in European languages */}
+        <div className="mb-6">
+          <h2
+            className={`text-2xl md:text-4xl font-light tracking-wide text-white transition-all duration-300 ${
+              isTimeChanging ? 'opacity-0 transform -translate-y-2' : 'opacity-100 transform translate-y-0'
+            }`}
+          >
+            {currentTime.word}
+          </h2>
+          <p
+            className={`text-xs text-white/50 font-light tracking-widest mt-1 transition-all duration-300 ${
+              isTimeChanging ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            {currentTime.lang}
+          </p>
+        </div>
 
         {/* Description */}
         <p className="text-lg md:text-xl max-w-3xl mx-auto mb-4 leading-relaxed font-light text-white">
